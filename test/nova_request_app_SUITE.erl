@@ -141,6 +141,8 @@ get_json(_) ->
 
 opts() ->
     opts(undefined).
+opts(undefined) ->
+    #{headers => #{}, close => true};
 opts(form) ->
     #{headers => #{'Content-Type' => <<"application/x-www-form-urlencoded">>}, close => true};
 opts(json_get) ->
