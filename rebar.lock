@@ -8,7 +8,7 @@
  {<<"mysql">>,{pkg,<<"mysql">>,<<"1.6.0">>},2},
  {<<"nova">>,
   {git,"https://github.com/novaframework/nova.git",
-       {ref,"fdc9e7e421d057fc5c8eeb04ca8cb112cd631783"}},
+       {ref,"0a79fdb183caff3b1531374dcd7c3c09f90d6f80"}},
   0},
  {<<"pmod_transform">>,{pkg,<<"pmod_transform">>,<<"1.1.0">>},1},
  {<<"poolboy">>,{pkg,<<"poolboy">>,<<"1.5.2">>},2},

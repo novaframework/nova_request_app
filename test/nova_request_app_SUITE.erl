@@ -103,7 +103,8 @@ all() ->
     [get_qs,
      post_params,
      post_json,
-     get_json].
+     get_json,
+     get_json_binding].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -117,12 +118,12 @@ all() ->
 get_qs(_) ->
     Path = [?BASEPATH, <<"get_qs?ordered_by=name">>],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts()),
-    #{<<"oredered_by">> := <<"name">>} = json:decode(RespBody, [maps]).
+    #{<<"ordered_by">> := <<"name">>} = json:decode(RespBody, [maps]).
 
 post_params(_) ->
     Path = [?BASEPATH, <<"post_params">>],
     Params = <<"field1=value1&field2=value2">>,
-    #{status := {200, _}, body := RespBody} = shttpc:post(Path, Params, opts(form)),
+    #{status := {201, _}, body := RespBody} = shttpc:post(Path, Params, opts(form)),
     #{<<"field1">> := <<"value1">>,
       <<"field2">> := <<"value2">>} = json:decode(RespBody, [maps]).
 
@@ -130,12 +131,17 @@ post_json(_) ->
     Path = [?BASEPATH, <<"json_post">>],
     Json = #{<<"field1">> => <<"value1">>,
              <<"field2">> => <<"value2">>},
-    #{status := {200, _}, body := RespBody} = shttpc:post(Path, encode(Json), opts(json_post)),
+    #{status := {201, _}, body := RespBody} = shttpc:post(Path, encode(Json), opts(json_post)),
     #{<<"field1">> := <<"value1">>,
       <<"field2">> := <<"value2">>} = json:decode(RespBody, [maps]).
 
 get_json(_) ->
     Path = [?BASEPATH, <<"json_get">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+
+get_json_binding(_) ->
+    Path = [?BASEPATH, <<"json_get/apan">>],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 

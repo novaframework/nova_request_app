@@ -20,3 +20,7 @@ json_post(#{json := Json}) ->
 json_get(_) ->
     Json = #{<<"test">> => <<"json">>},
     {json, Json}.
+
+json_get_binding(#{bindings := #{json := Json}}) ->
+    Json2 = #{<<"test">> => Json},
+    {json, Json2}.
