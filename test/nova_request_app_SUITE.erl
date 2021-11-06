@@ -143,7 +143,7 @@ get_json(_) ->
 get_json_binding(_) ->
     Path = [?BASEPATH, <<"json_get/apan">>],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
-    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"apan">>} = json:decode(RespBody, [maps]).
 
 opts() ->
     opts(undefined).
