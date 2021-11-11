@@ -22,6 +22,8 @@ suite() ->
 %% @end
 %%--------------------------------------------------------------------
 init_per_suite(_Config) ->
+    application:ensure_all_started(ssl),
+    application:ensure_all_started(gun),
     [].
 
 %%--------------------------------------------------------------------
@@ -100,11 +102,14 @@ groups() ->
 %% @end
 %%--------------------------------------------------------------------
 all() ->
-    [get_qs,
+    [
+     get_qs,
      post_params,
      post_json,
      get_json,
-     get_json_binding].
+     get_json_binding,
+     get_all,
+     ws].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -141,10 +146,26 @@ get_json(_) ->
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 
 get_json_binding(_) ->
-    Path = [?BASEPATH, <<"json_get/apan">>],
+    Path = [?BASEPATH, <<"json_binding/apan">>],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"apan">>} = json:decode(RespBody, [maps]).
 
+get_all(_) ->
+    Path = [?BASEPATH, <<"json_binding">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    CorrectAnswer = [#{<<"id">> => X} || X <- lists:seq(1, 10)],
+    CorrectAnswer = json:decode(RespBody, [maps]).
+
+ws(_) ->
+    Wohoo = <<"wohoo">>,
+    websocket([<<"/ws/">>, Wohoo], <<>>),
+    receive
+    {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
+        io:format("~p", [Response]),
+        Wohoo = Response
+    after 8000 ->
+        exit(timeout)
+    end.
 opts() ->
     opts(undefined).
 opts(undefined) ->
@@ -156,7 +177,26 @@ opts(json_get) ->
 opts(json_post) ->
     #{headers => #{'Content-Type' => <<"application/json">>}, close => true}.
 
+websocket(Path, _Token) ->
+    {ok, ConnPid} = gun:open("localhost", 8080, #{transport => tcp}),
+    {ok, _Protocol} = gun:await_up(ConnPid),
+    io:format("ConnPid: ~p", [ConnPid]),
+    gun:ws_upgrade(ConnPid, Path, []),
 
+    receive
+        {gun_upgrade, ConnPid, _StreamRef, _Protocols, _Headers} ->
+            ConnPid;
+        {gun_response, ConnPid, _, _, Status, Headers} ->
+            exit({ws_upgrade_failed, Status, Headers});
+        {gun_error, _ConnPid, _StreamRef, Reason} ->
+            exit({ws_upgrade_failed, Reason});
+        Err ->
+            io:format("WS unexpectedly received ~p", [Err])
+
+            %% More clauses here as needed.
+    after 2000 ->
+            exit(timeout)
+    end.
 
 encode(Json) ->
     json:encode(Json, [maps, binary]).
