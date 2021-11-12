@@ -15,3 +15,8 @@
              {"/:json", { nova_request_app_main_controller, json_get_binding}, #{methods => [get]}}
             ]
   }.
+
+#{prefix => "/secure",
+  security => {nova_request_auth, auth},
+  routes => [{"/:secure", {nova_request_app_main_controller, secure}, #{methods => [get]}}]
+}.

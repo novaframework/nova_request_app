@@ -109,7 +109,8 @@ all() ->
      get_json,
      get_json_binding,
      get_all,
-     ws].
+     ws,
+     get_secure].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -155,6 +156,11 @@ get_all(_) ->
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
     CorrectAnswer = [#{<<"id">> => X} || X <- lists:seq(1, 10)],
     CorrectAnswer = json:decode(RespBody, [maps]).
+
+get_secure(_) ->
+    Path = [?BASEPATH, <<"secure/apan">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{<<"secure">> := <<"apan">>} = json:decode(RespBody, [maps]).
 
 ws(_) ->
     Wohoo = <<"wohoo">>,
