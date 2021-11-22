@@ -18,5 +18,6 @@
 
 #{prefix => "/secure",
   security => {nova_request_auth, auth},
-  routes => [{"/:secure", {nova_request_app_main_controller, secure}, #{methods => [get]}}]
+  routes => [{"/:secure", {nova_request_app_main_controller, secure}, #{methods => [get]}},
+             {"/apanws/:ws", nova_request_ws, #{protocol => ws}}]
 }.

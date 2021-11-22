@@ -110,6 +110,7 @@ all() ->
      get_json_binding,
      get_all,
      ws,
+     ws_secure,
      get_secure].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
@@ -165,6 +166,17 @@ get_secure(_) ->
 ws(_) ->
     Wohoo = <<"wohoo">>,
     websocket([<<"/ws/">>, Wohoo], <<>>),
+    receive
+    {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
+        io:format("~p", [Response]),
+        Wohoo = Response
+    after 8000 ->
+        exit(timeout)
+    end.
+
+ws_secure(_) ->
+    Wohoo = <<"wohoo">>,
+    websocket([<<"/secure/apanws/">>, Wohoo], <<>>),
     receive
     {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
         io:format("~p", [Response]),
