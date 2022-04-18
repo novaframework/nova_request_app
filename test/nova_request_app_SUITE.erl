@@ -195,6 +195,12 @@ ws_secure(_) ->
     after 8000 ->
         exit(timeout)
     end.
+
+session(_) ->
+
+    Path = [?BASEPATH, <<"session/">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 opts() ->
     opts(undefined).
 opts(undefined) ->

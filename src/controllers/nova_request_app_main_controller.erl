@@ -7,7 +7,8 @@
          json_get_binding/1,
          all/1,
          secure/1,
-         internal_server_error/1
+         internal_server_error/1,
+         session/1
         ]).
 
 get_qs(#{parsed_qs := Qs}) ->
@@ -30,6 +31,13 @@ json_get_binding(#{bindings := #{<<"json">> := Json}}) ->
 all(_) ->
     Json = [#{ <<"id">> => X} || X <- lists:seq(1, 10)],
     {json, Json}.
+
+session(#{bindings := #{<<"session">> := Session}} = Req) ->
+   nova_session:set(Req, session, Session),
+   {ok, Session} = nova_session:get(Req, session),
+   {json, #{<<"session">> => Session}}.
+
+
 
 secure(#{bindings := #{<<"secure">> := Secure},
          auth_data := #{<<"this">> := <<"auth_data">>}}) ->

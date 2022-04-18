@@ -1,4 +1,5 @@
 -module(nova_request_app_router).
+-behaviour(nova_router).
 
 -export([routes/1]).
 
@@ -11,6 +12,7 @@ routes(_) ->
                   {"/json_post", { nova_request_app_main_controller, json_post}, #{methods => [post]}},
                   {"/json_get", { nova_request_app_main_controller, json_get}, #{methods => [get]}},
                   {"/ws/:ws", nova_request_ws, #{protocol => ws}},
+                  {"/session/:session", {nova_request_app_main_controller, session}, #{methods => [get]}},
                   {"/internalerror", { nova_request_app_main_controller, internal_server_error}, #{methods => [get]}}
                  ]
       },
