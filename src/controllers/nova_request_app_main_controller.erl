@@ -6,10 +6,9 @@
          json_get/1,
          json_get_binding/1,
          all/1,
-         secure/1
+         secure/1,
+         internal_server_error/1
         ]).
-
--include_lib("nova/include/nova.hrl").
 
 get_qs(#{parsed_qs := Qs}) ->
     {json, Qs}.
@@ -35,3 +34,7 @@ all(_) ->
 secure(#{bindings := #{<<"secure">> := Secure},
          auth_data := #{<<"this">> := <<"auth_data">>}}) ->
     {json, #{<<"secure">> => Secure}}.
+
+internal_server_error(_) ->
+    1 = 2,
+    {json, 2}.

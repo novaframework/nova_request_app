@@ -111,7 +111,9 @@ all() ->
      get_all,
      ws,
      ws_secure,
-     get_secure].
+     get_secure,
+     not_found,
+     internal_server_error].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -162,6 +164,15 @@ get_secure(_) ->
     Path = [?BASEPATH, <<"secure/apan">>],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
     #{<<"secure">> := <<"apan">>} = json:decode(RespBody, [maps]).
+
+not_found(_) ->
+    Path = [?BASEPATH, <<"notfound">>],
+    #{status := {404, _}} = shttpc:get(Path, opts(json_get)).
+
+
+internal_server_error(_) ->
+    Path = [?BASEPATH, <<"internalerror">>],
+    #{status := {500}} = shttpc:get(Path, opts(json_get)).
 
 ws(_) ->
     Wohoo = <<"wohoo">>,
