@@ -8,7 +8,9 @@
          all/1,
          secure/1,
          internal_server_error/1,
-         session/1
+         session/1,
+         get_user/1,
+         delete_user/1
         ]).
 
 get_qs(#{parsed_qs := Qs}) ->
@@ -46,3 +48,10 @@ secure(#{bindings := #{<<"secure">> := Secure},
 internal_server_error(_) ->
     1 = 2,
     {json, 2}.
+
+get_user(#{bindings := #{<<"userid">> := UserId}}) ->
+    {json, #{<<"id">> => UserId}}.
+
+delete_user(_) ->
+    {status, 204}.
+

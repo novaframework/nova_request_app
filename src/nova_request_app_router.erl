@@ -26,5 +26,12 @@ routes(_) ->
         security => {nova_request_auth, auth},
         routes => [{"/:secure", {nova_request_app_main_controller, secure}, #{methods => [get]}},
                    {"/apanws/:ws", nova_request_ws, #{protocol => ws}}]
-      } 
+      },
+      #{prefix => "/user/:userid",
+        security => false,
+        routes => [
+                   {"/", {nova_request_app_main_controller, get_user}, #{methods => [get]}},
+                   {"/", {nova_request_app_main_controller, delete_user}, #{methods => [delete]}}
+
+      ]}
     ].

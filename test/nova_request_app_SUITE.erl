@@ -113,7 +113,9 @@ all() ->
      ws_secure,
      get_secure,
      not_found,
-     internal_server_error].
+     internal_server_error,
+     get_user,
+     delete_user].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -172,7 +174,20 @@ not_found(_) ->
 
 internal_server_error(_) ->
     Path = [?BASEPATH, <<"internalerror">>],
-    #{status := {500}} = shttpc:get(Path, opts(json_get)).
+    #{status := {500, _}} = shttpc:get(Path, opts(json_get)).
+
+
+get_user(_) ->
+    UserId = <<"1">>,
+    Path = [?BASEPATH, <<"user/">>, UserId],
+    #{status := {200, _}, body := Body} = shttpc:get(Path, opts(json_get)),
+    #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
+
+delete_user(_) ->
+    UserId = <<"1">>,
+    Path = [?BASEPATH, <<"user/">>, UserId],
+    #{status := {204, _}} = shttpc:delete(Path, opts(json_get)).
+
 
 ws(_) ->
     Wohoo = <<"wohoo">>,
