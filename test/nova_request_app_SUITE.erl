@@ -115,7 +115,10 @@ all() ->
      not_found,
      internal_server_error,
      get_user,
-     delete_user].
+     get_user2,
+     delete_user,
+     delete_user2,
+     trailingslash].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -183,12 +186,26 @@ get_user(_) ->
     #{status := {200, _}, body := Body} = shttpc:get(Path, opts(json_get)),
     #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
 
+get_user2(_) ->
+    UserId = <<"1">>,
+    Path = [?BASEPATH, <<"user/">>, UserId, <<"/">>],
+    #{status := {200, _}, body := Body} = shttpc:get(Path, opts(json_get)),
+    #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
+
 delete_user(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId],
     #{status := {204, _}} = shttpc:delete(Path, opts(json_get)).
 
+delete_user2(_) ->
+    UserId = <<"1">>,
+    Path = [?BASEPATH, <<"user/">>, UserId, <<"/">>],
+    #{status := {204, _}} = shttpc:delete(Path, opts(json_get)).
 
+trailingslash(_) ->
+    Path = [?BASEPATH, <<"trailingslash">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 ws(_) ->
     Wohoo = <<"wohoo">>,
     websocket([<<"/ws/">>, Wohoo], <<>>),

@@ -19,7 +19,8 @@ routes(_) ->
       #{prefix => "/json_binding",
         security => false,
         routes => [{"/", {nova_request_app_main_controller, all}, #{methods => [get]}},
-                   {"/:json", { nova_request_app_main_controller, json_get_binding}, #{methods => [get]}}
+                   {"/:json", { nova_request_app_main_controller, json_get_binding}, #{methods => [get]}},
+                   {"/:json/", { nova_request_app_main_controller, json_get_binding}, #{methods => [get]}}
                   ]
         },
       #{prefix => "/secure",
@@ -33,5 +34,8 @@ routes(_) ->
                    {"/", {nova_request_app_main_controller, get_user}, #{methods => [get]}},
                    {"/", {nova_request_app_main_controller, delete_user}, #{methods => [delete]}}
 
-      ]}
+      ]},
+          #{prefix => "",
+        security => false,
+        routes => [{"/trailingslash/", {nova_request_app_main_controller, json_get}, #{methods => [get]}}]}
     ].
