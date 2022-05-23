@@ -107,6 +107,7 @@ all() ->
      post_params,
      post_json,
      get_json,
+     get_json_root,
      get_json_binding,
      get_all,
      ws,
@@ -151,6 +152,11 @@ post_json(_) ->
 
 get_json(_) ->
     Path = [?BASEPATH, <<"json_get">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+
+get_json_root(_) ->
+    Path = [?BASEPATH],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 
