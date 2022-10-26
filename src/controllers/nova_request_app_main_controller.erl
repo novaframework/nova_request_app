@@ -10,8 +10,10 @@
          internal_server_error/1,
          session/1,
          get_user/1,
-         delete_user/1
+         delete_user/1,
+         fallback/1
         ]).
+-fallback_controller(nova_request_app_fallback_controller).
 
 get_qs(#{parsed_qs := Qs}) ->
     {json, Qs}.
@@ -54,4 +56,7 @@ get_user(#{bindings := #{<<"userid">> := UserId}}) ->
 
 delete_user(_) ->
     {status, 204}.
+
+fallback(_) ->
+    {error, bad_data}.
 

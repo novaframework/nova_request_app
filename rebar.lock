@@ -5,7 +5,7 @@
  {<<"jhn_stdlib">>,{pkg,<<"jhn_stdlib">>,<<"3.6.2">>},1},
  {<<"nova">>,
   {git,"https://github.com/novaframework/nova.git",
-       {ref,"d1e47e2a21d814d808af070395ce13457e45ce92"}},
+       {ref,"55a989187a334d7ee87689e60ae11d7707272998"}},
   0},
  {<<"pmod_transform">>,{pkg,<<"pmod_transform">>,<<"1.1.0">>},1},
  {<<"quickrand">>,{pkg,<<"quickrand">>,<<"2.0.5">>},2},

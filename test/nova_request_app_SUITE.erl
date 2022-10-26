@@ -119,7 +119,8 @@ all() ->
      get_user2,
      delete_user,
      delete_user2,
-     trailingslash].
+     trailingslash,
+     fallback].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -212,6 +213,11 @@ trailingslash(_) ->
     Path = [?BASEPATH, <<"trailingslash">>],
     #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+
+fallback(_) ->
+    Path = [?BASEPATH, <<"fallback">>],
+    #{status := {400, _}} = shttpc:get(Path, opts(json_get)).
+
 ws(_) ->
     Wohoo = <<"wohoo">>,
     websocket([<<"/ws/">>, Wohoo], <<>>),

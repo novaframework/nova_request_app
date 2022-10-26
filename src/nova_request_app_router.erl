@@ -14,7 +14,8 @@ routes(_) ->
                   {"/json_get", { nova_request_app_main_controller, json_get}, #{methods => [get]}},
                   {"/ws/:ws", nova_request_ws, #{protocol => ws}},
                   {"/session/:session", {nova_request_app_main_controller, session}, #{methods => [get]}},
-                  {"/internalerror", { nova_request_app_main_controller, internal_server_error}, #{methods => [get]}}
+                  {"/internalerror", { nova_request_app_main_controller, internal_server_error}, #{methods => [get]}},
+                  {"/fallback", { nova_request_app_main_controller, fallback}, #{methods => [get]}}
                  ]
       },
       #{prefix => "/json_binding",
