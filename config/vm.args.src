@@ -1,6 +1,6 @@
--sname 'nova_request_app'
+-sname nova_request_app
 
--setcookie 'nova_request_app_cookie'
+-setcookie nova_request_app_cookie
 
 +K true
 +A30
