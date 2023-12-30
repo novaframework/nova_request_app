@@ -24,7 +24,7 @@ suite() ->
 init_per_suite(_Config) ->
     application:ensure_all_started(ssl),
     application:ensure_all_started(gun),
-   %% application:ensure_all_started(nova_request_app),
+    application:ensure_all_started(nova_request_app),
     [].
 
 %%--------------------------------------------------------------------
