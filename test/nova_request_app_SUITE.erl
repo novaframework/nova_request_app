@@ -122,7 +122,9 @@ all() ->
      delete_user,
      delete_user2,
      trailingslash,
-     fallback].
+     fallback,
+     view_with_ok,
+     view_with_view].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -223,6 +225,14 @@ trailingslash(_) ->
 fallback(_) ->
     Path = [?BASEPATH, <<"fallback">>],
     #{status := {400, _}} = shttpc:get(Path, opts(json_get)).
+
+view_with_ok(_) ->
+    Path = [?BASEPATH, <<"viewok">>],
+    #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
+
+view_with_view(_) ->
+    Path = [?BASEPATH, <<"viewview">>],
+    #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
 
 ws(_) ->
     Wohoo = <<"wohoo">>,

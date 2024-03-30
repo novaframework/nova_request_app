@@ -25,7 +25,8 @@
                                                          parse_qs => true}}
                    ]},
          {use_persistent_term, true},
-         {use_strict_routing, true}
+         {use_strict_routing, true},
+         {use_stacktrace, true}
         ]}
   %% Please change your app.src-file instead if you intend to add app-specific configurations
 ].
