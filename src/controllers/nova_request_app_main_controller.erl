@@ -13,7 +13,8 @@
          delete_user/1,
          fallback/1,
          return_view_with_ok/1,
-         return_view_with_view/1
+         return_view_with_view/1,
+         return_bindings/1
         ]).
 -fallback_controller(nova_request_app_fallback_controller).
 
@@ -68,3 +69,6 @@ return_view_with_ok(_) ->
 return_view_with_view(_) ->
     {view, #{message => <<"Hello">>}}.
 
+
+return_bindings(#{method := Method, bindings := Bindings}) ->
+    {json, Bindings#{<<"method">> => Method}}.

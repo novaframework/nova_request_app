@@ -124,7 +124,11 @@ all() ->
      trailingslash,
      fallback,
      view_with_ok,
-     view_with_view].
+     view_with_view,
+     get_bindings,
+     delete_bindings,
+     add_dynamic_routes
+    ].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -233,6 +237,26 @@ view_with_ok(_) ->
 view_with_view(_) ->
     Path = [?BASEPATH, <<"viewview">>],
     #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
+
+get_bindings(_) ->
+    Path = [?BASEPATH, <<"bindings/test">>],
+    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{<<"binding">> := <<"test">>, <<"method">> := <<"GET">>} = json:decode(RespBody, [maps]).
+
+delete_bindings(_) ->
+    Path = [?BASEPATH, <<"bindings/test">>],
+    #{status := {200, _}, body := RespBody} = shttpc:delete(Path, opts(json_get)),
+    #{<<"binding">> := <<"test">>, <<"method">> := <<"DELETE">>} = json:decode(RespBody, [maps]).
+
+add_dynamic_routes(_) ->
+    nova_router:add_routes(nova_request_app, #{routes => [{"/dynamic/:binding", { nova_request_app_main_controller, return_bindings }, #{methods => [get]}}]}),
+    nova_router:add_routes(nova_request_app, #{routes => [{"/dynamic/:binding", { nova_request_app_main_controller, return_bindings }, #{methods => [delete]}}]}),
+    Path = [?BASEPATH, <<"dynamic/test">>],
+    #{status := {200, _}, body := RespBody} = shttpc:delete(Path, opts(json_get)),
+    #{<<"binding">> := <<"test">>, <<"method">> := <<"DELETE">>} = json:decode(RespBody, [maps]),
+    #{status := {200, _}, body := RespBody0} = shttpc:get(Path, opts(json_get)),
+    #{<<"binding">> := <<"test">>, <<"method">> := <<"GET">>} = json:decode(RespBody0, [maps]).
+
 
 ws(_) ->
     Wohoo = <<"wohoo">>,
