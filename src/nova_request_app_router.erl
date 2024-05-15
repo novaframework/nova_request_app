@@ -17,7 +17,9 @@ routes(_) ->
                   {"/internalerror", { nova_request_app_main_controller, internal_server_error}, #{methods => [get]}},
                   {"/fallback", { nova_request_app_main_controller, fallback}, #{methods => [get]}},
                   {"/viewok", { nova_request_app_main_controller, return_view_with_ok}, #{methods => [get]}},
-                  {"/viewview", { nova_request_app_main_controller, return_view_with_view}, #{methods => [get]}}
+                  {"/viewview", { nova_request_app_main_controller, return_view_with_view}, #{methods => [get]}},
+                  {"/bindings/:binding", { nova_request_app_main_controller, return_bindings }, #{methods => [get]}},
+                  {"/bindings/:binding", { nova_request_app_main_controller, return_bindings }, #{methods => [delete]}}
                  ]
       },
       #{prefix => "/json_binding",
