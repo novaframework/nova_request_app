@@ -60,7 +60,8 @@ with_fun() ->
                   {"/fallback", fun nova_request_app_main_controller:fallback/1, #{methods => [get]}},
                   {"/viewok", fun nova_request_app_main_controller:return_view_with_ok/1, #{methods => [get]}},
                   {"/viewview", fun nova_request_app_main_controller:return_view_with_view/1 , #{methods => [get]}},
-                  {"/trailingslash/", fun nova_request_app_main_controller:json_get/1, #{methods => [get]}}
+                  {"/trailingslash/", fun nova_request_app_main_controller:json_get/1, #{methods => [get]}},
+                  {"/heartbeat", fun(_) -> {status, 200} end, #{methods => [get]}}
                   ]
       },
       #{prefix => "/fun/json_binding",

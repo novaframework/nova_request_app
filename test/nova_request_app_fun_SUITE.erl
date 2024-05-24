@@ -124,7 +124,8 @@ all() ->
      trailingslash,
      fallback,
      view_with_ok,
-     view_with_view].
+     view_with_view,
+     heartbeat].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -232,6 +233,10 @@ view_with_ok(_) ->
 
 view_with_view(_) ->
     Path = [?BASEPATH, <<"viewview">>],
+    #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
+
+heartbeat(_) ->
+    Path = [?BASEPATH, <<"heartbeat">>],
     #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
 
 ws(_) ->
