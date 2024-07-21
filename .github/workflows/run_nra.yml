@@ -27,10 +27,8 @@ jobs:
         otp-version: ${{matrix.otp}}
         rebar3-version: ${{matrix.rebar3}}
         version-type: strict
-    - name: Compile
-      run: rebar3 compile
     - name: Test
-      run: rebar3 ct
+      run: NOVA_BRANCH="${{ inputs.nova_branch }}" rebar3 ct
 
 
 
