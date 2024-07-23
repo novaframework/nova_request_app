@@ -138,13 +138,13 @@ all() ->
 
 get_qs(_) ->
     Path = [?BASEPATH, <<"get_qs?ordered_by=name">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts()),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts()),
     #{<<"ordered_by">> := <<"name">>} = json:decode(RespBody, [maps]).
 
 post_params(_) ->
     Path = [?BASEPATH, <<"post_params">>],
     Params = <<"field1=value1&field2=value2">>,
-    #{status := {201, _}, body := RespBody} = shttpc:post(Path, Params, opts(form)),
+    #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, Params, opts(form)),
     #{<<"field1">> := <<"value1">>,
       <<"field2">> := <<"value2">>} = json:decode(RespBody, [maps]).
 
@@ -152,92 +152,92 @@ post_json(_) ->
     Path = [?BASEPATH, <<"json_post">>],
     Json = #{<<"field1">> => <<"value1">>,
              <<"field2">> => <<"value2">>},
-    #{status := {201, _}, body := RespBody} = shttpc:post(Path, encode(Json), opts(json_post)),
+    #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, encode(Json), opts(json_post)),
     #{<<"field1">> := <<"value1">>,
       <<"field2">> := <<"value2">>} = json:decode(RespBody, [maps]).
 
 get_json(_) ->
     Path = [?BASEPATH, <<"json_get">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 
 get_json_root(_) ->
     Path = [?BASEPATH],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 
 get_json_binding(_) ->
     Path = [?BASEPATH, <<"json_binding/apan">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"apan">>} = json:decode(RespBody, [maps]).
 
 get_json_content_type(_) ->
     Path = [?BASEPATH, <<"json_get">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_post)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_post)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 get_all(_) ->
     Path = [?BASEPATH, <<"json_binding">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     CorrectAnswer = [#{<<"id">> => X} || X <- lists:seq(1, 10)],
     CorrectAnswer = json:decode(RespBody, [maps]).
 
 get_secure(_) ->
     Path = [?BASEPATH, <<"secure/apan">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"secure">> := <<"apan">>} = json:decode(RespBody, [maps]).
 
 not_found(_) ->
     Path = [?BASEPATH, <<"notfound">>],
-    #{status := {404, _}} = shttpc:get(Path, opts(json_get)).
+    #{status := {404, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
 
 internal_server_error(_) ->
     Path = [?BASEPATH, <<"internalerror">>],
-    #{status := {500, _}} = shttpc:get(Path, opts(json_get)).
+    #{status := {500, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
 
 get_user(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId],
-    #{status := {200, _}, body := Body} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := Body} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
 
 get_user2(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId, <<"/">>],
-    #{status := {200, _}, body := Body} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := Body} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
 
 delete_user(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId],
-    #{status := {204, _}} = shttpc:delete(Path, opts(json_get)).
+    #{status := {204, _}} = jhn_shttpc:delete(Path, opts(json_get)).
 
 delete_user2(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId, <<"/">>],
-    #{status := {204, _}} = shttpc:delete(Path, opts(json_get)).
+    #{status := {204, _}} = jhn_shttpc:delete(Path, opts(json_get)).
 
 trailingslash(_) ->
     Path = [?BASEPATH, <<"trailingslash">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 
 fallback(_) ->
     Path = [?BASEPATH, <<"fallback">>],
-    #{status := {400, _}} = shttpc:get(Path, opts(json_get)).
+    #{status := {400, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
 view_with_ok(_) ->
     Path = [?BASEPATH, <<"viewok">>],
-    #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
+    #{status := {200, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
 view_with_view(_) ->
     Path = [?BASEPATH, <<"viewview">>],
-    #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
+    #{status := {200, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
 heartbeat(_) ->
     Path = [?BASEPATH, <<"heartbeat">>],
-    #{status := {200, _}} = shttpc:get(Path, opts(json_get)).
+    #{status := {200, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
 ws(_) ->
     Wohoo = <<"wohoo">>,
@@ -264,7 +264,7 @@ ws_secure(_) ->
 session(_) ->
 
     Path = [?BASEPATH, <<"session/">>],
-    #{status := {200, _}, body := RespBody} = shttpc:get(Path, opts(json_get)),
+    #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
 opts() ->
     opts(undefined).
