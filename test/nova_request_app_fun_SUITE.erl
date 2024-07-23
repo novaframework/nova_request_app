@@ -139,14 +139,14 @@ all() ->
 get_qs(_) ->
     Path = [?BASEPATH, <<"get_qs?ordered_by=name">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts()),
-    #{<<"ordered_by">> := <<"name">>} = json:decode(RespBody, [maps]).
+    #{<<"ordered_by">> := <<"name">>} = jhn_json:decode(RespBody, [maps]).
 
 post_params(_) ->
     Path = [?BASEPATH, <<"post_params">>],
     Params = <<"field1=value1&field2=value2">>,
     #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, Params, opts(form)),
     #{<<"field1">> := <<"value1">>,
-      <<"field2">> := <<"value2">>} = json:decode(RespBody, [maps]).
+      <<"field2">> := <<"value2">>} = jhn_json:decode(RespBody, [maps]).
 
 post_json(_) ->
     Path = [?BASEPATH, <<"json_post">>],
@@ -154,37 +154,37 @@ post_json(_) ->
              <<"field2">> => <<"value2">>},
     #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, encode(Json), opts(json_post)),
     #{<<"field1">> := <<"value1">>,
-      <<"field2">> := <<"value2">>} = json:decode(RespBody, [maps]).
+      <<"field2">> := <<"value2">>} = jhn_json:decode(RespBody, [maps]).
 
 get_json(_) ->
     Path = [?BASEPATH, <<"json_get">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"json">>} = jhn_json:decode(RespBody, [maps]).
 
 get_json_root(_) ->
     Path = [?BASEPATH],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"json">>} = jhn_json:decode(RespBody, [maps]).
 
 get_json_binding(_) ->
     Path = [?BASEPATH, <<"json_binding/apan">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"test">> := <<"apan">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"apan">>} = jhn_json:decode(RespBody, [maps]).
 
 get_json_content_type(_) ->
     Path = [?BASEPATH, <<"json_get">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_post)),
-    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"json">>} = jhn_json:decode(RespBody, [maps]).
 get_all(_) ->
     Path = [?BASEPATH, <<"json_binding">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
     CorrectAnswer = [#{<<"id">> => X} || X <- lists:seq(1, 10)],
-    CorrectAnswer = json:decode(RespBody, [maps]).
+    CorrectAnswer = jhn_json:decode(RespBody, [maps]).
 
 get_secure(_) ->
     Path = [?BASEPATH, <<"secure/apan">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"secure">> := <<"apan">>} = json:decode(RespBody, [maps]).
+    #{<<"secure">> := <<"apan">>} = jhn_json:decode(RespBody, [maps]).
 
 not_found(_) ->
     Path = [?BASEPATH, <<"notfound">>],
@@ -200,13 +200,13 @@ get_user(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId],
     #{status := {200, _}, body := Body} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
+    #{<<"id">> := <<"1">>} = jhn_json:decode(Body, [maps]).
 
 get_user2(_) ->
     UserId = <<"1">>,
     Path = [?BASEPATH, <<"user/">>, UserId, <<"/">>],
     #{status := {200, _}, body := Body} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"id">> := <<"1">>} = json:decode(Body, [maps]).
+    #{<<"id">> := <<"1">>} = jhn_json:decode(Body, [maps]).
 
 delete_user(_) ->
     UserId = <<"1">>,
@@ -221,7 +221,7 @@ delete_user2(_) ->
 trailingslash(_) ->
     Path = [?BASEPATH, <<"trailingslash">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"json">>} = jhn_json:decode(RespBody, [maps]).
 
 fallback(_) ->
     Path = [?BASEPATH, <<"fallback">>],
@@ -265,7 +265,7 @@ session(_) ->
 
     Path = [?BASEPATH, <<"session/">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts(json_get)),
-    #{<<"test">> := <<"json">>} = json:decode(RespBody, [maps]).
+    #{<<"test">> := <<"json">>} = jhn_json:decode(RespBody, [maps]).
 opts() ->
     opts(undefined).
 opts(undefined) ->
@@ -299,4 +299,4 @@ websocket(Path, _Token) ->
     end.
 
 encode(Json) ->
-    json:encode(Json, [maps, binary]).
+    jhn_json:encode(Json, [maps, binary]).
