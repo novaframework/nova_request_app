@@ -6,7 +6,7 @@ Deps = case NovaBranch of
             <<"master">> -> {deps, [
               {nova, ".*", {git, "https://github.com/novaframework/nova.git", {branch, "master"}}}
              ]};
-             <<"refs/tags/", Rest>> ->
+             <<"refs/tags/", Rest/binary>> ->
               {deps, [{nova, ".*", {git, "https://github.com/novaframework/nova.git", {tag, binary_to_list(Rest)}}}]};
              NovaBranch -> {deps, [
               {nova, ".*", {git, "https://github.com/novaframework/nova.git", {branch, binary_to_list(NovaBranch)}}}
