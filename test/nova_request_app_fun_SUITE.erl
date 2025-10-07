@@ -125,7 +125,10 @@ all() ->
      fallback,
      view_with_ok,
      view_with_view,
-     heartbeat].
+     heartbeat,
+     json_schema_ok,
+     json_schema_validation_error
+].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -238,6 +241,17 @@ view_with_view(_) ->
 heartbeat(_) ->
     Path = [?BASEPATH, <<"heartbeat">>],
     #{status := {200, _}} = jhn_shttpc:get(Path, opts(json_get)).
+
+json_schema_ok(_) ->
+    Path = [?BASEPATH, <<"json_schemas">>],
+    Json = #{<<"a_string">> => <<"whatever">>},
+    #{status := {200, _}} = jhn_shttpc:post(Path, encode(Json), opts(json_post)).
+json_schema_validation_error(_) ->
+    Path = [?BASEPATH, <<"json_schemas">>],
+    Json = #{<<"a_string">> => 5},
+    #{status := {400, _}, body := Body} = jhn_shttpc:post(Path, encode(Json), opts(json_post)),
+    ct:pal("Body: ~p~njson:decode(Body): ~p~n", [Body, json:decode(Body)]),
+    [#{<<"error_type">> := <<"wrong_type">>}] = json:decode(Body).
 
 ws(_) ->
     Wohoo = <<"wohoo">>,

@@ -2,17 +2,14 @@ Conf0 = CONFIG,
 
 NovaBranch = list_to_binary(os:getenv("NOVA_BRANCH", "master")),
 
-Deps = case NovaBranch of
-            <<"master">> -> {deps, [
-              {nova, ".*", {git, "https://github.com/novaframework/nova.git", {branch, "master"}}}
-             ]};
-             <<"refs/tags/", Rest/binary>> ->
-              {deps, [{nova, ".*", {git, "https://github.com/novaframework/nova.git", {tag, binary_to_list(Rest)}}}]};
-             NovaBranch -> {deps, [
-              {nova, ".*", {git, "https://github.com/novaframework/nova.git", {branch, binary_to_list(NovaBranch)}}}
-             ]}
+Deps = proplists:get_value(deps, Conf0),
+NovaDeps = case NovaBranch of
+            <<"master">> -> {nova, {git, "https://github.com/novaframework/nova.git", {branch, "master"}}};
+             <<"refs/tags/", Rest/binary>> -> {nova, {git, "https://github.com/novaframework/nova.git", {tag, binary_to_list(Rest)}}};
+             NovaBranch -> {nova, {git, "https://github.com/novaframework/nova.git", {branch, binary_to_list(NovaBranch)}}}
             end,
+Deps2 = {deps, [NovaDeps|Deps]},
+
 Conf1 = proplists:delete(deps, Conf0),
 
-[Deps|Conf1].
-
+[Deps2|Conf1].

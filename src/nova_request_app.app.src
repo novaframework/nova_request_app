@@ -9,7 +9,8 @@
    [
     kernel,
     stdlib,
-    nova
+    nova,
+    nova_json_schemas
    ]},
   {env,[]},
   {modules, []},

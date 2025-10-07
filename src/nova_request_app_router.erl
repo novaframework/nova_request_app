@@ -79,6 +79,16 @@ with_fun() ->
         security => false,
         routes => [
                     {"/", fun nova_request_app_main_controller:get_user/1, #{methods => [get]}},
-                    {"/", fun nova_request_app_main_controller:delete_user/1, #{methods => [delete]}}
-
-      ]}].
+                    {"/", fun nova_request_app_main_controller:delete_user/1, #{methods => [delete]}}]
+       },
+      #{prefix => "/fun/json_schemas",
+          security => false,
+          plugins => [
+                      {pre_request, nova_request_plugin, #{decode_json_body => true}},
+                      {pre_request, nova_json_schemas, #{render_errors => true}}
+                      ],
+          routes => [
+                      {"/", fun(_) -> {status, 200} end,
+                      #{methods => [post], extra_state => #{ json_schema => "./schemas/sample_json_schema.json" }}}]
+       }
+].
