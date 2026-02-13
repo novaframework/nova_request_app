@@ -7,9 +7,14 @@ on:
         required: true
         type: string
         default: main
+      nova_repo:
+        required: false
+        type: string
+        default: "novaframework/nova"
 
 env:
   NOVA_BRANCH: "${{ inputs.nova_branch }}"
+  NOVA_REPO: "${{ inputs.nova_repo }}"
 jobs:
   run-nra:
     runs-on: ubuntu-22.04
