@@ -299,8 +299,7 @@ websocket(Path, _Token) ->
     end.
 
 encode(Json) ->
-    thoas:encode(Json).
+    iolist_to_binary(json:encode(Json)).
 
 decode(Json) ->
-    {ok, Result} = thoas:decode(Json),
-    Result.
+    json:decode(Json).
