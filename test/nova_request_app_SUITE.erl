@@ -124,7 +124,9 @@ all() ->
      trailingslash,
      fallback,
      view_with_ok,
-     view_with_view].
+     view_with_view,
+     json_schema_valid,
+     json_schema_invalid].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -292,9 +294,19 @@ websocket(Path, _Token) ->
             exit(timeout)
     end.
 
+json_schema_valid(_) ->
+    Path = [?BASEPATH, <<"items">>],
+    Json = #{<<"name">> => <<"widget">>, <<"quantity">> => 5},
+    #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, encode(Json), opts(json_post)),
+    #{<<"name">> := <<"widget">>, <<"quantity">> := 5} = decode(RespBody).
+
+json_schema_invalid(_) ->
+    Path = [?BASEPATH, <<"items">>],
+    Json = #{<<"name">> => 123},
+    #{status := {400, _}} = jhn_shttpc:post(Path, encode(Json), opts(json_post)).
+
 encode(Json) ->
-    thoas:encode(Json).
+    iolist_to_binary(json:encode(Json)).
 
 decode(Json) ->
-    {ok, Result} = thoas:decode(Json),
-    Result.
+    json:decode(Json).

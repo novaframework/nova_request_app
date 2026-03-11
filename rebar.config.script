@@ -4,17 +4,22 @@ NovaBranch = list_to_binary(os:getenv("NOVA_BRANCH", "master")),
 NovaRepo = os:getenv("NOVA_REPO", "novaframework/nova"),
 RepoUrl = "https://github.com/" ++ NovaRepo ++ ".git",
 
-Deps = case NovaBranch of
-            <<"master">> -> {deps, [
-              {nova, ".*", {git, RepoUrl, {branch, "master"}}}
-             ]};
-             <<"refs/tags/", Rest/binary>> ->
-              {deps, [{nova, ".*", {git, RepoUrl, {tag, binary_to_list(Rest)}}}]};
-             NovaBranch -> {deps, [
+NovaDep = case NovaBranch of
+            <<"master">> ->
+              {nova, ".*", {git, RepoUrl, {branch, "master"}}};
+            <<"refs/tags/", Rest/binary>> ->
+              {nova, ".*", {git, RepoUrl, {tag, binary_to_list(Rest)}}};
+            NovaBranch ->
               {nova, ".*", {git, RepoUrl, {branch, binary_to_list(NovaBranch)}}}
-             ]}
-            end,
+          end,
+
+%% Get existing deps from rebar.config (minus nova which we override)
+ExistingDeps = case proplists:get_value(deps, Conf0) of
+                   undefined -> [];
+                   Deps0 -> [D || D <- Deps0, element(1, D) =/= nova]
+               end,
+
+Deps = {deps, [NovaDep | ExistingDeps]},
 Conf1 = proplists:delete(deps, Conf0),
 
 [Deps|Conf1].
-
