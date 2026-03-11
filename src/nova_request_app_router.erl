@@ -20,7 +20,9 @@ no_fun() ->
                   {"/internalerror", { nova_request_app_main_controller, internal_server_error}, #{methods => [get]}},
                   {"/fallback", { nova_request_app_main_controller, fallback}, #{methods => [get]}},
                   {"/viewok", { nova_request_app_main_controller, return_view_with_ok}, #{methods => [get]}},
-                  {"/viewview", { nova_request_app_main_controller, return_view_with_view}, #{methods => [get]}}
+                  {"/viewview", { nova_request_app_main_controller, return_view_with_view}, #{methods => [get]}},
+                  {"/items", {nova_request_app_main_controller, create_item},
+                   #{methods => [post], extra_state => #{json_schema => "schemas/create_item.json"}}}
                  ]
       },
       #{prefix => "/json_binding",
