@@ -12,7 +12,7 @@
 %% @end
 %%--------------------------------------------------------------------
 suite() ->
-    [{timetrap,{seconds,30}}].
+    [{timetrap, {seconds, 30}}].
 
 %%--------------------------------------------------------------------
 %% @spec init_per_suite(Config0) ->
@@ -104,27 +104,30 @@ groups() ->
 %%--------------------------------------------------------------------
 all() ->
     [
-     get_qs,
-     post_params,
-     post_json,
-     get_json,
-     get_json_root,
-     get_json_binding,
-     get_json_content_type,
-     get_all,
-     ws,
-     ws_secure,
-     get_secure,
-     not_found,
-     internal_server_error,
-     get_user,
-     get_user2,
-     delete_user,
-     delete_user2,
-     trailingslash,
-     fallback,
-     view_with_ok,
-     view_with_view].
+        get_qs,
+        post_params,
+        post_json,
+        get_json,
+        get_json_root,
+        get_json_binding,
+        get_json_content_type,
+        get_all,
+        ws,
+        ws_secure,
+        get_secure,
+        not_found,
+        internal_server_error,
+        get_user,
+        get_user2,
+        delete_user,
+        delete_user2,
+        trailingslash,
+        fallback,
+        view_with_ok,
+        view_with_view,
+        json_schema_valid,
+        json_schema_invalid
+    ].
 %%--------------------------------------------------------------------
 %% @spec TestCase(Config0) ->
 %%               ok | exit() | {skip,Reason} | {comment,Comment} |
@@ -138,22 +141,28 @@ all() ->
 get_qs(_) ->
     Path = [?BASEPATH, <<"get_qs?ordered_by=name">>],
     #{status := {200, _}, body := RespBody} = jhn_shttpc:get(Path, opts()),
-    #{<<"ordered_by">> := <<"name">>}= decode(RespBody).
+    #{<<"ordered_by">> := <<"name">>} = decode(RespBody).
 
 post_params(_) ->
     Path = [?BASEPATH, <<"post_params">>],
     Params = <<"field1=value1&field2=value2">>,
     #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, Params, opts(form)),
-    #{<<"field1">> := <<"value1">>,
-      <<"field2">> := <<"value2">>}= decode(RespBody).
+    #{
+        <<"field1">> := <<"value1">>,
+        <<"field2">> := <<"value2">>
+    } = decode(RespBody).
 
 post_json(_) ->
     Path = [?BASEPATH, <<"json_post">>],
-    Json = #{<<"field1">> => <<"value1">>,
-             <<"field2">> => <<"value2">>},
+    Json = #{
+        <<"field1">> => <<"value1">>,
+        <<"field2">> => <<"value2">>
+    },
     #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, encode(Json), opts(json_post)),
-    #{<<"field1">> := <<"value1">>,
-      <<"field2">> := <<"value2">>} = decode(RespBody).
+    #{
+        <<"field1">> := <<"value1">>,
+        <<"field2">> := <<"value2">>
+    } = decode(RespBody).
 
 get_json(_) ->
     Path = [?BASEPATH, <<"json_get">>],
@@ -189,11 +198,9 @@ not_found(_) ->
     Path = [?BASEPATH, <<"notfound">>],
     #{status := {404, _}} = jhn_shttpc:get(Path, opts(json_get)).
 
-
 internal_server_error(_) ->
     Path = [?BASEPATH, <<"internalerror">>],
     #{status := {500, _}} = jhn_shttpc:get(Path, opts(json_get)).
-
 
 get_user(_) ->
     UserId = <<"1">>,
@@ -238,9 +245,9 @@ ws(_) ->
     Wohoo = <<"wohoo">>,
     websocket([<<"/ws/">>, Wohoo], <<>>),
     receive
-    {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
-        io:format("~p", [Response]),
-        Wohoo = Response
+        {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
+            io:format("~p", [Response]),
+            Wohoo = Response
     after 8000 ->
         exit(timeout)
     end.
@@ -249,9 +256,9 @@ ws_secure(_) ->
     Wohoo = <<"wohoo">>,
     websocket([<<"/secure/apanws/">>, Wohoo], <<>>),
     receive
-    {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
-        io:format("~p", [Response]),
-        Wohoo = Response
+        {gun_ws, _ConnPid, _StreamRef0, {text, Response}} ->
+            io:format("~p", [Response]),
+            Wohoo = Response
     after 8000 ->
         exit(timeout)
     end.
@@ -287,14 +294,24 @@ websocket(Path, _Token) ->
         Err ->
             io:format("WS unexpectedly received ~p", [Err])
 
-            %% More clauses here as needed.
+        %% More clauses here as needed.
     after 2000 ->
-            exit(timeout)
+        exit(timeout)
     end.
 
+json_schema_valid(_) ->
+    Path = [?BASEPATH, <<"items">>],
+    Json = #{<<"name">> => <<"widget">>, <<"quantity">> => 5},
+    #{status := {201, _}, body := RespBody} = jhn_shttpc:post(Path, encode(Json), opts(json_post)),
+    #{<<"name">> := <<"widget">>, <<"quantity">> := 5} = decode(RespBody).
+
+json_schema_invalid(_) ->
+    Path = [?BASEPATH, <<"items">>],
+    Json = #{<<"name">> => 123},
+    #{status := {400, _}} = jhn_shttpc:post(Path, encode(Json), opts(json_post)).
+
 encode(Json) ->
-    thoas:encode(Json).
+    iolist_to_binary(json:encode(Json)).
 
 decode(Json) ->
-    {ok, Result} = thoas:decode(Json),
-    Result.
+    json:decode(Json).

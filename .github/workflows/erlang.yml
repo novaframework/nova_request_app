@@ -3,23 +3,11 @@ name: Build and test
 on: [push]
 
 jobs:
-  build:
-    runs-on: ubuntu-24.04
-    name: Erlang/OTP ${{matrix.otp}} / rebar3 ${{matrix.rebar3}}
-    strategy:
-      fail-fast: false
-      matrix:
-        otp: ['27.3', '28.3']
-        rebar3: ['3.26.0']
-
-    steps:
-    - uses: actions/checkout@v6
-    - uses: erlef/setup-beam@v1
-      with:
-        otp-version: ${{matrix.otp}}
-        rebar3-version: ${{matrix.rebar3}}
-        version-type: strict
-    - name: Compile
-      run: rebar3 compile
-    - name: Test
-      run: rebar3 ct
+  ci:
+    uses: Taure/erlang-ci/.github/workflows/ci.yml@v1
+    with:
+      otp-version: '28.0'
+      enable-eunit: false
+      enable-ct: true
+      enable-dialyzer: false
+      enable-xref: false
