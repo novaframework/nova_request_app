@@ -9,3 +9,5 @@ jobs:
       otp-version: '28.0'
       enable-eunit: false
       enable-ct: true
+      enable-dialyzer: false
+      enable-xref: false

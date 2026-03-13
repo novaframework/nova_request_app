@@ -1,10 +1,12 @@
 -module(nova_request_ws).
 
--export([init/1,
-         websocket_init/1,
-         websocket_handle/2,
-         websocket_info/2,
-         terminate/3]).
+-export([
+    init/1,
+    websocket_init/1,
+    websocket_handle/2,
+    websocket_info/2,
+    terminate/3
+]).
 
 init(State) ->
     {ok, State}.
