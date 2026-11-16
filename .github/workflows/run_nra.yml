@@ -12,6 +12,9 @@ on:
         type: string
         default: "novaframework/nova"
 
+permissions:
+  contents: read
+
 env:
   NOVA_BRANCH: "${{ inputs.nova_branch }}"
   NOVA_REPO: "${{ inputs.nova_repo }}"
@@ -36,7 +39,7 @@ jobs:
         rebar3-version: ${{matrix.rebar3}}
         version-type: strict
     - name: Test
-      run: NOVA_BRANCH="${{ inputs.nova_branch }}" rebar3 ct
+      run: rebar3 ct
 
 
 
